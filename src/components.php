@@ -1,25 +1,52 @@
 <?php
 
-function SectionHeader($section_id, $html_classes, $heading) {
-    $header_html = '
-    <header id="header-%s" class="%s">
-        <h1>%s</h1>
-        <div id="options-%s" class="options">
-            <select name="language" id="languages">
-                <option value="it"><svg .../></option> <!-- svg = bandiera lingua -->
-                <option value="en"><svg .../></option>
-            </select> 
-            <button id="toggle-language-button-%s><svg id="toggle-icon-%s".../></button> <!-- toggle nasconi / mostra, svg = toggle icon -->
-        </div>
+function SectionHeader($id, $heading) {
+    $headerStyle = "p-10 flex justify-between content-center";
+    $h1Style =  "mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white";
+    $buttonStyle = "p-5 bg-black";
+
+    $headerHTMLComponent = '
+    <header id="header-'. $id . '" class="'.$headerStyle . '">
+    <h1 class="'.$h1Style . '">'.$heading . '</h1>
+    <div id="options-'.$id '">
+      <select id="select-languages-'.$id . '">
+        <option value="it">IT</option>
+        <option value="en">EN</option>
+      </select>
+
+      <button id="toggle-language-button-'.$id . '" class="'.$buttonStyle . '">
+        <object
+          id="object-'.$id . '"
+          data="./assets/hide.svg"
+          width="20"
+          height="20"
+        ></object>
+      </button>
+    </div>
     </header>
     ';
 
-    return sprintf($header_html, $section_id, $html_classes, $heading, $section_id, $section_id, $section_id);
+    return $headerHTMLComponent;
 }
 
-?>
+function SectionMain($id, $paragraphs) {
+    $mainStyle = "pl-10 flex justify-between content-center";
+    $pStyle = "font-normal text-gray-700 dark:text-white";
 
-<script>
-    const heading = getElementById('heading-0');
-    const toggleLanguageButton = getElementById('toggle-language-button-0');
-</script>
+    $mainHTMLComponent = '<main id="main-'.$id .'" class="'.$mainStyle . '">';
+
+    for ($paragraphs as $paragraph) $mainHTMLComponent .= '<p class="'.$pStyle . '">'.$paragraph .'</p>';
+
+    $mainHTMLComponent .= '</main>';
+    return $mainHTMLComponent;
+}
+
+function Section($id, $header, $paragraphs) {
+    $sectionStyle = "w-1/2 m-auto block bg-white hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700";
+    $SectionHTMLComponent = '<section id="section-'.$id . '">';
+    $SectionHTMLComponent .= SectionHeader($id, $heading);
+    $SectionHTMLComponent .= SectionMain($id, $paragraphs);
+    $SectionHTMLComponent .= '</section>';
+
+    return $SectionHTMLComponent;
+}
