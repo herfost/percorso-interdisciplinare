@@ -17,17 +17,53 @@ Ogni argomento esposto viene trascritto come sezione ossia una componente grafic
 
 ![[../../_attachments/excalidraw/section-heading|section-heading]]
 
+![showcase](/media/output.gif)
+
 ```html
-<header id="header-%s" class="%s">
-	<h1>%s</h1>
-	<div id="options-%s" class="options">
-		<select name="language" id="languages">
-			<option value="it"><svg ...></svg></option> <!-- svg = bandiera lingua -->
-			<option value="en"><svg ...></svg></option>
-		</select>
-		<button id="toggle-language-button-%s"><svg id="toggle-icon-%s"></svg></button> <!-- toggle nasconi / mostra, svg = toggle icon -->
-	</div>
-</header>
+<section
+  id=<? echo "section-".$id ?>
+  class="<? echo $sectionStyle ?>"
+>
+  <header
+    id=<? echo "header-".$id ?>
+    class="<? echo $headerStyle ?>"
+  >
+  <h1
+    class="<? echo $h1Style ?>"
+  ><? echo $heading ?></h1>
+    <div id=<? echo "options-".$id ?>>
+      <select
+        id=<? echo "select-languages-".$id ?>
+        name=<? echo "select-".$id ?>
+      >
+        <option value="it">IT</option>
+        <option value="en">EN</option>
+      </select>
+      <button
+        id=<? echo "toggle-language-button-".$id ?>
+        class="<? echo $buttonStyle ?>"
+      >
+        <object
+          id=<? echo "object-".$id; ?>
+          data="<? echo $hideSectionSVG ?>"
+          width="20"
+          height="20"
+        ></object>
+      </button>
+    </div>
+  </header>
+  <main
+    id=<? echo "main-".$id ?>
+    class="<? echo $mainStyle ?>"
+  >
+  <?php for($i = 0; $i < count($paragraphs); ++$i): ?>
+    <p
+      id=<? echo "p-".$i."-".$id?>
+      class="<?echo $pStyle ?>"
+    ><? echo $paragraphs[$i] ?></p>
+  <?php endfor; ?>
+  </main>
+</section>
 ```
 
 La componente grafica presenta tre elementi: l'intestazione `h1`, il dropdown menu per la scelta della lingua `ul` e il bottone per nascondere o mostrare la sezione `button`
@@ -35,25 +71,32 @@ La componente grafica presenta tre elementi: l'intestazione `h1`, il dropdown me
 Il linguaggio della sezione viene aggiornato selezionando il campo desiderato dal menu delle lingue:
 
 ```js
-ul.addEventListener(onChoice, changeLanguage);
+const toggleVisibilityButtons = document.querySelectorAll("button");
+const toggleLanguageSelections = document.querySelectorAll("select");
 
-changeLanguage = (section_id, language) => {
-  const sectionAPI = "...";
-  const heading = document.getElementById("heading-" + section_id);
-  const content = document.getElementById("content-" + section_id);
+for (toggleVisibilityButton of toggleVisibilityButtons) {
+  toggleVisibilityButton.addEventListener("click", () => {
+    const sectionId = getSectionId(toggleVisibilityButton.id);
+    const main = document.getElementById("main-" + sectionId);
+    const object = document.getElementById("object-" + sectionId);
 
-  fetch(sectionAPI + language)
-    .then((response) => {
-      response.json;
-    })
-    .then((json) => {
-      heading.innerHTML = json.heading;
-      content.innerHTML = json.content;
-    });
-};
+    // hideSection
+  });
+}
+
+for (toggleLanguageSelection of toggleLanguageSelections) {
+  toggleLanguageSelection.addEventListener("change", () => {
+    const sectionId = getSectionId(toggleLanguageSelection.id);
+    const language = toggleLanguageSelection.value;
+    const p = document.getElementById("p-" + sectionId + "-0");
+
+    // Chiamata AJAX
+  });
+}
 ```
 
 ## Note
+Da rivedere la struttura del database
 
 ```php
 $QUERY_CREATE_TABLE_SECTION = 'CREATE TALBE IF NOT EXISTS `section_%s` (
