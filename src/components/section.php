@@ -6,6 +6,8 @@ $h1Style = "mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white
 $buttonStyle = "p-5 bg-black";
 $pStyle = "p-5 font-normal text-gray-700 dark:text-white";
 
+$hideSectionSVG = __DIR__."/../assets/hide.svg";
+$showSectionSVG = __DIR__."/../assets/show.svg";
 ?> 
 <section 
   id=<? echo "section-".$id ?>
@@ -32,7 +34,7 @@ $pStyle = "p-5 font-normal text-gray-700 dark:text-white";
       >
         <object
           id=<? echo "object-".$id; ?>
-          data="./assets/hide.svg"
+          data="<? echo $hideSectionSVG ?>"
           width="20"
           height="20"
         ></object>
@@ -53,28 +55,28 @@ $pStyle = "p-5 font-normal text-gray-700 dark:text-white";
 </section>
 
 <script>
-    // Variables
-    const hideSectionSVG = "./assets/hide.svg";
-    const showSectionSVG = "./assets/show.svg";
+    // Utility
+    function getSectionId(elementId) {
+      const lastIndex = elementId.lastIndexOf("-");
+      return elementId.slice(lastIndex + 1);
+    }
 
     // Toggle Main Visibility
     const toggleVisibilityButtons = document.querySelectorAll("button");
 
     for (toggleVisibilityButton of toggleVisibilityButtons) {
       toggleVisibilityButton.addEventListener("click", () => {
-        const lastIndex = toggleVisibilityButton.id.lastIndexOf("-");
-        const sectionId = toggleVisibilityButton.id.slice(lastIndex + 1);
-
+        const sectionId = getSectionId(toggleVisibilityButton.id);
         const main = document.getElementById("main-" + sectionId);
         const object = document.getElementById("object-" + sectionId);
 
         // TODO: aggiungere animazione
         if (main.style.display === "none") {
           style = "block";
-          svg = hideSectionSVG;
+          svg = "<? echo $hideSectionSVG ?>";
         } else {
           style = "none";
-          svg = showSectionSVG;
+          svg = "<? echo $showSectionSVG ?>";
         }
 
         main.style.display = style;
@@ -86,9 +88,7 @@ $pStyle = "p-5 font-normal text-gray-700 dark:text-white";
     const toggleLanguageSelections = document.querySelectorAll("select");
     for (toggleLanguageSelection of toggleLanguageSelections) {
       toggleLanguageSelection.addEventListener("change", () => {
-        const lastIndex = toggleLanguageSelection.id.lastIndexOf("-");
-        const sectionId = toggleLanguageSelection.id.slice(lastIndex + 1);
-
+        const sectionId = getSectionId(toggleLanguageSelection.id);
         const language = toggleLanguageSelection.value;
         const p = document.getElementById("p-" + sectionId + "-0");
 
