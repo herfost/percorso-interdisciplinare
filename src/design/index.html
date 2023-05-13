@@ -25,26 +25,31 @@
               height="20"
             ></object>
           </button>
-          <!-- toggle nasconi / mostra, svg = toggle icon -->
         </div>
       </header>
-      <main id="main-0">
-        <p id="p-0-0">Italiano</p>
+      <main id="main-0" class="">
+        <p id="p-0-0">paragraph 1</p>
+        <p id="p-0-0">paragraph 2</p>
+        <p id="p-0-0">paragraph 3</p>
+        <p id="p-0-0">paragraph 4</p>
+        <p id="p-0-0">paragraph 5</p>
       </main>
     </section>
   </body>
   <script>
-    // Variables 
+    // Variables
     const hideSectionSVG = "./assets/hide.svg";
     const showSectionSVG = "./assets/show.svg";
 
     // TailwindCSS style
-    const sectionStyle = "w-1/2 m-auto block bg-white hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700";
+    const sectionStyle =
+      "w-1/2 m-auto block bg-white hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700";
     const headerStyle = "p-10 flex justify-between content-center";
-    const mainStyle = "pl-10 flex justify-between content-center";
-    const h1Style =  "mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white";
+    const mainStyle = "pl-5 flex flex-col justify-between content-center";
+    const h1Style =
+      "mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white";
     const buttonStyle = "p-5 bg-black";
-    const pStyle = "font-normal text-gray-700 dark:text-white";
+    const pStyle = "p-5 font-normal text-gray-700 dark:text-white";
 
     const sections = document.querySelectorAll("section");
     const headers = document.querySelectorAll("header");
@@ -52,43 +57,28 @@
     const h1s = document.querySelectorAll("h1");
     const ps = document.querySelectorAll("p");
 
-    for (section of sections) { 
-        sectionStyle.split(" ").forEach(style => {
-            section.classList.add(style);
+    function addStyle(items, styles) {
+      for (item of items) {
+        styles.split(" ").forEach((style) => {
+          item.classList.add(style);
         });
+      }
     }
 
-    for (header of headers) {
-        headerStyle.split(" ").forEach(style => {
-            header.classList.add(style);
-        });
-    }
-
-    for (main of mains) {
-        mainStyle.split(" ").forEach(style => {
-            main.classList.add(style);
-        });
-    }
-
-    for (h1 of h1s) {
-        h1Style.split(" ").forEach(style => {
-            h1.classList.add(style);
-        });
-    }
-
-    for (p of ps) {
-        pStyle.split(" ").forEach(style => {
-            p.classList.add(style);
-        });
-    }
+    // Migrare a mappa, realizzare metodo on load che carica gli styles
+    addStyle(sections, sectionStyle);
+    addStyle(headers, headerStyle);
+    addStyle(mains, mainStyle);
+    addStyle(h1s, h1Style);
+    addStyle(ps, pStyle);
 
     // Toggle Main Visibility
     const toggleVisibilityButtons = document.querySelectorAll("button");
 
     for (toggleVisibilityButton of toggleVisibilityButtons) {
-        buttonStyle.split(" ").forEach(style => {
-          toggleVisibilityButton.classList.add(style);
-        });
+      buttonStyle.split(" ").forEach((style) => {
+        toggleVisibilityButton.classList.add(style);
+      });
     }
 
     for (toggleVisibilityButton of toggleVisibilityButtons) {
