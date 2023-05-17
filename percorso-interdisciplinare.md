@@ -17,114 +17,119 @@ Ogni argomento esposto viene trascritto come sezione ossia una componente grafic
 
 ![[../../_attachments/excalidraw/section-heading|section-heading]]
 
-![showcase](/media/output.gif)
-
-```html
-<section
-  id=<? echo "section-".$id ?>
-  class="<? echo $sectionStyle ?>"
->
-  <header
-    id=<? echo "header-".$id ?>
-    class="<? echo $headerStyle ?>"
-  >
-  <h1
-    class="<? echo $h1Style ?>"
-  ><? echo $heading ?></h1>
-    <div id=<? echo "options-".$id ?>>
-      <select
-        id=<? echo "select-languages-".$id ?>
-        name=<? echo "select-".$id ?>
-      >
-        <option value="it">IT</option>
-        <option value="en">EN</option>
-      </select>
-      <button
-        id=<? echo "toggle-language-button-".$id ?>
-        class="<? echo $buttonStyle ?>"
-      >
-        <object
-          id=<? echo "object-".$id; ?>
-          data="<? echo $hideSectionSVG ?>"
-          width="20"
-          height="20"
-        ></object>
-      </button>
-    </div>
-  </header>
-  <main
-    id=<? echo "main-".$id ?>
-    class="<? echo $mainStyle ?>"
-  >
-  <?php for($i = 0; $i < count($paragraphs); ++$i): ?>
-    <p
-      id=<? echo "p-".$i."-".$id?>
-      class="<?echo $pStyle ?>"
-    ><? echo $paragraphs[$i] ?></p>
-  <?php endfor; ?>
-  </main>
-</section>
+![[media/output.gif]]
+```php
+<? foreach ($sections as $section): ?>
+    <?
+	    $id = $section[0];
+	    $heading = $section[1];
+	    $paragraph = $section[2];
+	    $image_src = $section[3];
+    ?>
+    <section id="<? echo "section-" . $id ?>"
+        class="w-1/2 m-auto block bg-white hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:hover:bg-gray-700">
+        <header id="<? echo "header-" . $id ?>" class="p-10 flex justify-between content-center">
+            <h1 id="<? echo "h-" . $id ?>" class="pl-5 flex flex-col justify-between content-center">
+                <? echo $heading ?>
+            </h1>
+            <div id="<? echo "options-" . $id ?>">
+                <select id="<? echo "select-languages-" . $id ?>" name="<? echo "select-" . $id ?>">
+                    <option value="it">IT</option>
+                    <option value="en">EN</option>
+                </select>
+                <button id="<? echo "toggle-language-button-" . $id ?>"
+                    class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                    X
+                </button>
+            </div>
+        </header>
+        <main id="<? echo "main-" . $id ?>" class="p-5 bg-black">
+            <p id="<? echo "p-" . $id ?>" class="p-5 font-normal text-gray-700 dark:text-white"><? echo $paragraph; ?>
+            </p>
+            <img src="<? echo $image_src; ?>" />
+        </main>
+    </section>
+<? endforeach; ?>
 ```
 
 La componente grafica presenta tre elementi: l'intestazione `h1`, il dropdown menu per la scelta della lingua `ul` e il bottone per nascondere o mostrare la sezione `button`
 
 Il linguaggio della sezione viene aggiornato selezionando il campo desiderato dal menu delle lingue:
-
-```js
-const toggleVisibilityButtons = document.querySelectorAll("button");
-const toggleLanguageSelections = document.querySelectorAll("select");
-
-for (toggleVisibilityButton of toggleVisibilityButtons) {
-  toggleVisibilityButton.addEventListener("click", () => {
-    const sectionId = getSectionId(toggleVisibilityButton.id);
-    const main = document.getElementById("main-" + sectionId);
-    const object = document.getElementById("object-" + sectionId);
-
-    // hideSection
-  });
-}
-
-for (toggleLanguageSelection of toggleLanguageSelections) {
-  toggleLanguageSelection.addEventListener("change", () => {
-    const sectionId = getSectionId(toggleLanguageSelection.id);
-    const language = toggleLanguageSelection.value;
-    const p = document.getElementById("p-" + sectionId + "-0");
-
-    // Chiamata AJAX
-  });
-}
+```php
+<select id="<? echo "select-languages-" . $id ?>" name="<? echo "select-" . $id ?>">
+	<option value="it">IT</option>
+	<option value="en">EN</option>
+</select>
 ```
 
-## Note
-Da rivedere la struttura del database
+```js
+ const toggleLanguageSelections = document.querySelectorAll("select");
+    for (toggleLanguageSelection of toggleLanguageSelections) {
+        toggleLanguageSelection.addEventListener("change", () => {
+            const _sectionId = getSectionId(toggleLanguageSelection.id);
+            const _language = toggleLanguageSelection.value;
+
+            const h = document.getElementById("h-" + _sectionId);
+            const p = document.getElementById("p-" + _sectionId);
+
+            const data = { id: _sectionId, language: _language };
+            const url = 'http://localhost/percorso-interdisciplinare-refactor/src/action.php';
+
+            init = {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-type': 'application/json; charset=UTF-8',
+                }
+            };
+
+            fetch(url, init).then((response) => response.json())
+                .then(json => {
+                    h.innerHTML = json.heading;
+                    p.innerHTML = json.paragraph;
+                }).catch(error => console.log(error));
+        });
+    }
+```
 
 ```php
-$QUERY_CREATE_TABLE_SECTION = 'CREATE TALBE IF NOT EXISTS `section_%s` (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `heading` VARCHAR(255) NOT NULL
+<?php
+header('Content-Type: application/json');
+
+$content = file_get_contents('php://input');
+$json = json_decode($content, true);
+
+include_once './database/connection.php';
+$result = get_section($json['id'], $json['language']);
+
+exit(json_encode($result));
+```
+
+```php
+<?php
+include_once __DIR__ . '/connection.php';
+include_once __DIR__ . '/../configuration.php';
+
+$CRAETE_DATABASE_QUERY = "CREATE DATABASE IF NOT EXISTS " . $DB_NAME;
+
+$CREATE_TABLE_SECTION_QUERY = 'CREATE TABLE IF NOT EXISTS `sections_%s` (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `image_id` int(11) unsigned NOT NULL,
+    `heading` VARCHAR(255) NOT NULL,
+    `paragraph` VARCHAR(255) NOT NULL,
+    FOREIGN KEY (`image_id`) REFERENCES images(`id`)
 )';
 
-$QUERY_CREATE_TABLE_PARAGRAPH = 'CREATE TALBE IF NOT EXISTS `paragraph_%s` (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `section_id` int(11) unsigned NOT NULL,
-    `content` VARCHAR(255) NOT NULL,
-    `section_id` FOREIGN KEY (section_id) REFERENCES section_%s(id)
+$CREATE_TABLE_IMAGE_QUERY = 'CREATE TABLE IF NOT EXISTS `images` (
+    `id` int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    `src` VARCHAR(255) NOT NULL
 )';
 
-$QUERY_CREATE_TABLE_IMAGE = 'CREATE TALBE IF NOT EXISTS `image` (
-    `id` int(11) unsigned NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    `section_id` int(11) unsigned NOT NULL,
-    `section_id` FOREIGN KEY (section_id) REFERENCES section_%s(id)
-)';
+$INSERT_SECTIONS_QUERY = "INSERT INTO sections_%s ('image_id', 'heading', 'paragraph') VALUES ('%s', '%s', '%s')";
+$INSERT_IMAGES_QUERY = "INSERT INTO images ('src') VALUES ('%s')";
 
-$QUERY_SELECT_SECTIONS = 'SELECT * FROM `section_%s`';
-$QUERY_SELECT_SECTION = 'SELECT * FROM `section_%s` s WHERE `s.section_id` = %d';
+$SELECT_SECTION_QUERY = "SELECT sections_%s.id, sections_%s.heading, sections_%s.paragraph, images.src FROM sections_%s, images WHERE sections_%s.image_id = images.id AND sections_%s.id = %s";
+$SELECT_ALL_SECTIONS_QUERY = "SELECT sections_%s.id, sections_%s.heading, sections_%s.paragraph, images.src FROM sections_%s, images WHERE sections_%s.image_id = images.id";
 
-$QUERY_SELECT_PARAGRAPHS_BY_SECTION_ID = 'SELECT * FROM `paragraph_%s` p WHERE `p.section_id` = %d';
-
-sprintf($QUERY_CREATE_TABLE_SECTION, 'it');
-sprintf($QUERY_CREATE_TABLE_SECTION, 'en');
-sprintf($QUERY_CREATE_TABLE_PARAGRAPH, 'it', 'it');
-sprintf($QUERY_CREATE_TABLE_PARAGRAPH, 'en', 'en');
-sprintf($QUERY_CREATE_TABLE_IMAGE, 'it');
+$SELECT_IMAGES_QUERY = "SELECT * FROM images WHERE id = %s";
 ```
