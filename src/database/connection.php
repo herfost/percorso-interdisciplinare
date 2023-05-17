@@ -28,7 +28,7 @@ function select_section($id, $language = 'it') {
     return mysqli_query_trace($connection, $query, 'Unable to select sections_' . $language . ': ' . $id);
 }
 
-function get_selection($id, $language = 'it') {
+function get_section($id, $language = 'it') {
     $result = select_section($id, $language);
     return mysqli_fetch_assoc($result);
 }

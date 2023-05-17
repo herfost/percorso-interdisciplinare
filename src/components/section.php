@@ -87,7 +87,6 @@ $showSectionSVG = __DIR__."/../assets/show.svg";
         const p = document.getElementById("p-" + sectionId + "-0");
 
         // TODO: Chiamata AJAX
-        p.innerHTML = language === "it" ? "Italiano" : "English";
       });
     }
   </script>
