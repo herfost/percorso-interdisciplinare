@@ -12,6 +12,8 @@ if (!$connection) {
     exit;
 }
 
+// mysqli_query_trace($connection, $DROP_DB_QUERY, 'Unable to drop database: ' . $DB_NAME);
+
 if (!mysqli_select_db($connection, $DB_NAME))
     include_once __DIR__ . '/database_setup.php';
 

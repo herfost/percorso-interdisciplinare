@@ -1,5 +1,5 @@
 <?php
-$PROJECTFOLDER_NAME = 'percorso-interdisciplinare-refactor';
+$PROJECTFOLDER_NAME = 'percorso-interdisciplinare';
 $SERVER_NAME = 'database';
 $HOST_NAME = 'root';
 $PASSWORD = $_ENV['MYSQL_ROOT_PASSWORD'];

@@ -24,3 +24,5 @@ $SELECT_SECTION_QUERY = "SELECT sections_%s.id, sections_%s.heading, sections_%s
 $SELECT_ALL_SECTIONS_QUERY = "SELECT sections_%s.id, sections_%s.heading, sections_%s.paragraph, images.src FROM sections_%s, images WHERE sections_%s.image_id = images.id";
 
 $SELECT_IMAGES_QUERY = "SELECT * FROM images WHERE id = %s";
+
+$DROP_DB_QUERY = "DROP DATABASE " . $DB_NAME;
