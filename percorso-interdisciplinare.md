@@ -133,3 +133,9 @@ $SELECT_ALL_SECTIONS_QUERY = "SELECT sections_%s.id, sections_%s.heading, sectio
 
 $SELECT_IMAGES_QUERY = "SELECT * FROM images WHERE id = %s";
 ```
+
+<!-- 
+TODO: change components style 
+TODO: fix sections wrong content in db 
+TODO: add images to sections
+--> 
