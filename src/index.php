@@ -13,6 +13,7 @@ include_once __DIR__ . '/components/head.php';
 $links = $NAVBAR_LINKS;
 include_once __DIR__ . '/components/navbar.php';
 
+
 $result = select_all_sections('it');
 $sections = mysqli_fetch_all($result);
 include_once __DIR__ . '/components/sections.php';
